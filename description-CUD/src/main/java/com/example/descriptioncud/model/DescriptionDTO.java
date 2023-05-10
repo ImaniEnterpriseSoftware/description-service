@@ -1,36 +1,13 @@
 package com.example.descriptioncud.model;
 
-import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
-@Entity
-@Table(name = "descriptions")
-public class Description {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "title")
+public class DescriptionDTO {
     private String title;
-
-    @Column(name = "details")
     private String details;
-
-    @Column(name = "user_id")
     private String user_id;
-
-    @Column(name = "collection_id")
     private String collection_id;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
