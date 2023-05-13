@@ -3,6 +3,7 @@ package com.example.descriptioncud.controller;
 import com.example.descriptioncud.model.Description;
 import com.example.descriptioncud.model.DescriptionDTO;
 import com.example.descriptioncud.rabbitmq.ProducerService;
+import com.example.descriptioncud.rabbitmq.ProducerUpdate;
 import com.example.descriptioncud.service.DescriptionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -17,12 +18,14 @@ public class DescriptionController {
 
     private final DescriptionService descriptionService;
     private final ProducerService producerService;
+    private final ProducerUpdate producerUpdate;
     private final ModelMapper modelMapper;
 
-    public DescriptionController(DescriptionService descriptionService, ProducerService producerService, ModelMapper modelMapper) {
+    public DescriptionController(DescriptionService descriptionService, ProducerService producerService, ModelMapper modelMapper, ProducerUpdate producerUpdate) {
         this.descriptionService = descriptionService;
         this.producerService = producerService;
         this.modelMapper = modelMapper;
+        this.producerUpdate = producerUpdate;
     }
 
     @GetMapping
@@ -52,6 +55,10 @@ public class DescriptionController {
     public ResponseEntity<Description> updateDescription(@PathVariable("id") Long id,
                                                          @RequestBody Description description){
         descriptionService.updateDescription(id, description);
+
+        //Convert the Description model to a DTO, using ModelMapper
+        DescriptionDTO dto = modelMapper.map(description, DescriptionDTO.class);
+        producerUpdate.updateDescription(dto.getTitle(), dto);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(description);
     }
