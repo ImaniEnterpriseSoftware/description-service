@@ -2,6 +2,7 @@ package com.example.descriptioncud.controller;
 
 import com.example.descriptioncud.model.Description;
 import com.example.descriptioncud.model.DescriptionDTO;
+import com.example.descriptioncud.rabbitmq.ProducerDelete;
 import com.example.descriptioncud.rabbitmq.ProducerService;
 import com.example.descriptioncud.rabbitmq.ProducerUpdate;
 import com.example.descriptioncud.service.DescriptionService;
@@ -19,13 +20,15 @@ public class DescriptionController {
     private final DescriptionService descriptionService;
     private final ProducerService producerService;
     private final ProducerUpdate producerUpdate;
+    private final ProducerDelete producerDelete;
     private final ModelMapper modelMapper;
 
-    public DescriptionController(DescriptionService descriptionService, ProducerService producerService, ModelMapper modelMapper, ProducerUpdate producerUpdate) {
+    public DescriptionController(DescriptionService descriptionService, ProducerService producerService, ModelMapper modelMapper, ProducerUpdate producerUpdate, ProducerDelete producerDelete) {
         this.descriptionService = descriptionService;
         this.producerService = producerService;
         this.modelMapper = modelMapper;
         this.producerUpdate = producerUpdate;
+        this.producerDelete = producerDelete;
     }
 
     @GetMapping
@@ -33,12 +36,7 @@ public class DescriptionController {
         return descriptionService.getAllDescriptions();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Description> getById(@PathVariable Long id){
-        Description description = descriptionService.getById(id);
 
-        return ResponseEntity.ok(description);
-    }
 
     @PostMapping
     public ResponseEntity<Description> saveDescription(@RequestBody Description description){
@@ -65,6 +63,11 @@ public class DescriptionController {
 
     @DeleteMapping("/{id}")
     public String deleteDescription(@PathVariable("id") Long id){
+        //Convert the Description model to a DTO, using ModelMapper
+        Description description = descriptionService.getById(id);
+        DescriptionDTO dto = modelMapper.map(description, DescriptionDTO.class);
+        producerDelete.deleteDescription(dto.getTitle(), dto);
+
         descriptionService.deleteDescription(id);
 
         return "Description was deleted.";

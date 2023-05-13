@@ -21,8 +21,8 @@ public class DescriptionService {
     }
 
     public Description getById(Long id) {
-        Optional<Description> optionalImageEntity = descriptionRepo.findById(id);
-        return optionalImageEntity.orElseThrow(() -> new RuntimeException("Image not found"));
+        Description description = descriptionRepo.findById(id).get();
+        return description;
     }
 
     public Description saveDescription(Description description) {
