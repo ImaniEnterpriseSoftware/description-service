@@ -36,8 +36,6 @@ public class DescriptionController {
         return descriptionService.getAllDescriptions();
     }
 
-
-
     @PostMapping
     public ResponseEntity<Description> saveDescription(@RequestBody Description description){
         descriptionService.saveDescription(description);
