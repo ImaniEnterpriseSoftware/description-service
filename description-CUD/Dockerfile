@@ -11,5 +11,5 @@ RUN mvn -f /home/app/pom.xml clean package
 FROM openjdk:17
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
-EXPOSE 8081
+EXPOSE 8080
 ENTRYPOINT ["java","-jar","/app.jar"]

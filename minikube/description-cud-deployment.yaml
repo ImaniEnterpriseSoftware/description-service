@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: description-cud-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: description-cud
+  template:
+    metadata:
+      labels:
+        app: description-cud
+    spec:
+      containers:
+        - name: description-cud
+          image: imanileemans/description-cud
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://description-mysql:3306/descriptiondb?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false
+          resources:
+            limits:
+              memory: "512Mi"

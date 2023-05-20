@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: description-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: description-mysql
+  template:
+    metadata:
+      labels:
+        app: description-mysql
+    spec:
+      containers:
+        - name: description-mysql
+          image: mysql:latest
+          env:
+            - name: MYSQL_DATABASE
+              value: descriptiondb
+            - name: MYSQL_ROOT_USERNAME
+              value: root
+            - name: MYSQL_ROOT_PASSWORD
+              value: m@nipassword
+          ports:
+            - containerPort: 3306
