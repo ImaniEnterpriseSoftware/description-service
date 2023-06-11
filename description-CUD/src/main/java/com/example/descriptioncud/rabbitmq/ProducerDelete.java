@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProducerDelete {
 
-    private static final String EXCHANGE_NAME = "descr-delete";
-    private static final String ROUTING_KEY = "routing-key-descr-delete";
     private final RabbitTemplate rabbitTemplate;
     private final ObjectMapper objectMapper;
 
@@ -22,7 +20,7 @@ public class ProducerDelete {
     public void deleteDescription(String title, DescriptionDTO dto){
         try {
             String message = objectMapper.writeValueAsString(dto);
-            rabbitTemplate.convertAndSend(EXCHANGE_NAME, ROUTING_KEY, message);
+            rabbitTemplate.convertAndSend(RabbitQueueConfig.EXCHANGE2_NAME, RabbitQueueConfig.ROUTING_KEY2, message);
         } catch (JsonProcessingException e) {
             System.err.println("Error serializing message: " + e.getMessage());
             throw new RuntimeException(e);

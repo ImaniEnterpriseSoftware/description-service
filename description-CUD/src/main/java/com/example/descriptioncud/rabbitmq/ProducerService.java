@@ -22,7 +22,7 @@ public class ProducerService {
     public void sendDescription(DescriptionDTO dto){
         try {
             String message = objectMapper.writeValueAsString(dto);
-            rabbitTemplate.convertAndSend(EXCHANGE_NAME, ROUTING_KEY, message);
+            rabbitTemplate.convertAndSend(RabbitQueueConfig.EXCHANGE1_NAME, RabbitQueueConfig.ROUTING_KEY1, message);
         } catch (JsonProcessingException e) {
             System.err.println("Error serializing message: " + e.getMessage());
             throw new RuntimeException(e);
