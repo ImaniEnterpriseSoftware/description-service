@@ -10,11 +10,13 @@ import com.example.descriptioncud.service.DescriptionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,24 +64,29 @@ public class IntegrationTests {
 
     @Test
     void testSaveDescription() {
-        //Arrange
+        // Arrange
         Description description = new Description();
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Mockito.when(request.getAttribute("userId")).thenReturn("4"); // Mock the userId attribute
+
         when(descriptionService.saveDescription(description)).thenReturn(description);
 
         DescriptionDTO dto = new DescriptionDTO();
         when(modelMapper.map(description, DescriptionDTO.class)).thenReturn(dto);
 
-        //Act
-        ResponseEntity<Description> responseEntity = descriptionController.saveDescription(description);
+        // Act
+        ResponseEntity<Description> responseEntity = descriptionController.saveDescription(description, request);
 
         verify(descriptionService, times(1)).saveDescription(description);
         verify(modelMapper, times(1)).map(description, DescriptionDTO.class);
         verify(producerService, times(1)).sendDescription(dto);
 
-        //Assert
+        // Assert
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertEquals(description, responseEntity.getBody());
+        assertEquals("4", description.getUser_id()); // Assert that the userId is set correctly
     }
+
 
     @Test
     void testUpdateDescription() {
