@@ -1,5 +1,7 @@
 package com.example.descriptioncud.config;
 
+import com.example.descriptioncud.model.Description;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -30,15 +32,20 @@ public class JwtFilter extends GenericFilterBean {
                 return;
             }
 
+
+
             final String token = authHeader.substring(7);
             try {
                 Claims claims = Jwts.parser().setSigningKey("secret").parseClaimsJws(token).getBody();
                 request.setAttribute("claims", claims);
                 request.setAttribute("descriptions", servletRequest.getParameter("id"));
+                String userId = claims.get("userId", String.class);
+                request.setAttribute("userId", userId);
                 filterChain.doFilter(request, response);
             } catch (JwtException e) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
             }
         }
     }
+
 }

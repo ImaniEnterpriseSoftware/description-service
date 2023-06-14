@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -36,8 +37,26 @@ public class DescriptionController {
         return descriptionService.getAllDescriptions();
     }
 
+//    @PostMapping
+//    public ResponseEntity<Description> saveDescription(@RequestBody Description description){
+//        descriptionService.saveDescription(description);
+//
+//        // Convert the Description model to a DescriptionDTO using ModelMapper
+//        DescriptionDTO dto = modelMapper.map(description, DescriptionDTO.class);
+//        producerService.sendDescription(dto);
+//
+//        return ResponseEntity.status(HttpStatus.CREATED).body(description);
+//    }
+
     @PostMapping
-    public ResponseEntity<Description> saveDescription(@RequestBody Description description){
+    public ResponseEntity<Description> saveDescription(@RequestBody Description description, HttpServletRequest request) {
+        // Retrieve the userId from the request attributes
+        String userId = (String) request.getAttribute("userId");
+
+        // Set the userId in the Description object
+        description.setUser_id(userId);
+        System.out.print(userId);
+
         descriptionService.saveDescription(description);
 
         // Convert the Description model to a DescriptionDTO using ModelMapper
