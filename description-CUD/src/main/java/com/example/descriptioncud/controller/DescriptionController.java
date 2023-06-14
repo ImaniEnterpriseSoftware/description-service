@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/descriptions")
+@RequestMapping("/api/description")
 public class DescriptionController {
 
     private final DescriptionService descriptionService;
